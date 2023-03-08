@@ -28,11 +28,11 @@ public class Controlador {
         model.addAttribute("listaVuelos", listaVuelos);
         return "vuelos";
     }
+
     @RequestMapping(value = "/CrearVuelos")
     public String CreaVuelos(Model model){
         return "creaVuelos";
     }
-
 
     @PostMapping(value = "/CrearVuelos")
     public ResponseEntity<?> CrearVuelos(Vuelo vuelo){
@@ -40,20 +40,39 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(VueloCreado);
     }
 
-    @PutMapping(value = "/ModificarVuelos")
-    public ResponseEntity<?> ModificarVuelos (@RequestBody Vuelo vuelo){
-        Vuelo vueloModificado=this.impl.ModificaVuelo(vuelo);
+    @GetMapping(value = "/ModificarVuelos")
+    public String ModiVuelos(@RequestParam int numVuelo, Model model){
+        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
+        model.addAttribute("vuelo", vuelo);
+        return "modificarVuelo";
+    }
+    @PostMapping(value = "/ModificarVuelos")
+    public ResponseEntity<?> ModificarVuelos (@PathVariable int numVuelo,
+                                              @RequestParam int numPasajeros,
+                                              @RequestParam String origen,
+                                              @RequestParam String destino,
+                                              @RequestParam String fecha,
+                                              @RequestParam String horaSalida){
+        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
+        vuelo.setNumPasajeros(numPasajeros);
+        vuelo.setOrigen(origen);
+        vuelo.setDestino(destino);
+        vuelo.setFecha(fecha);
+        vuelo.setHora(horaSalida);
+        Vuelo vueloModificado = vueloRepo.save(vuelo);
         return ResponseEntity.status(HttpStatus.CREATED).body(vueloModificado);
     }
 
+
     @GetMapping(value = "/BuscaVuelo/{numVuelo}")
     public ResponseEntity<?> BuscaVuelo (@PathVariable int numVuelo){
-        Vuelo vuelo=this.impl.BuscaVuelo(numVuelo);
+        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
         return ResponseEntity.ok(vuelo);
     }
+
     @DeleteMapping(value = "/ElimnVuelo/{numVuelo}")
     public ResponseEntity<?> ElimnVuelo (@PathVariable int numVuelo){
-        this.impl.EliminaVuelo(numVuelo);
+        impl.EliminaVuelo(numVuelo);
         return ResponseEntity.ok().build();
     }
 }
