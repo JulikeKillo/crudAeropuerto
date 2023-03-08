@@ -32,12 +32,12 @@ public class AdminServiceIMPL implements AdminService {
 
     @Override
     public Administrador BuscaAdministrador(int idAdmin) {
-        return this.repo.findById((long) idAdmin).orElse(null);
+        return this.repo.findById((Integer) idAdmin).orElse(null);
     }
 
     @Override
     public void EliminaAdministrador(int idAdmin) {
-        this.repo.deleteById((long) idAdmin);
+        this.repo.deleteById((Integer) idAdmin);
     }
 
 
