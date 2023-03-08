@@ -40,27 +40,12 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(VueloCreado);
     }
 
+
     @GetMapping(value = "/ModificarVuelos")
     public String ModiVuelos(@RequestParam int numVuelo, Model model){
         Vuelo vuelo = impl.BuscaVuelo(numVuelo);
         model.addAttribute("vuelo", vuelo);
         return "modificarVuelo";
-    }
-    @PostMapping(value = "/ModificarVuelos")
-    public ResponseEntity<?> ModificarVuelos (@PathVariable int numVuelo,
-                                              @RequestParam int numPasajeros,
-                                              @RequestParam String origen,
-                                              @RequestParam String destino,
-                                              @RequestParam String fecha,
-                                              @RequestParam String horaSalida){
-        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
-        vuelo.setNumPasajeros(numPasajeros);
-        vuelo.setOrigen(origen);
-        vuelo.setDestino(destino);
-        vuelo.setFecha(fecha);
-        vuelo.setHora(horaSalida);
-        Vuelo vueloModificado = vueloRepo.save(vuelo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(vueloModificado);
     }
 
 
@@ -70,9 +55,11 @@ public class Controlador {
         return ResponseEntity.ok(vuelo);
     }
 
-    @DeleteMapping(value = "/ElimnVuelo/{numVuelo}")
-    public ResponseEntity<?> ElimnVuelo (@PathVariable int numVuelo){
-        impl.EliminaVuelo(numVuelo);
-        return ResponseEntity.ok().build();
+    @GetMapping(value = "/ElimnVuelo")
+    public String ElimnVuelo(@RequestParam int numVuelo){
+        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
+        vueloRepo.delete(vuelo);
+        return "vuelos";
     }
+
 }
