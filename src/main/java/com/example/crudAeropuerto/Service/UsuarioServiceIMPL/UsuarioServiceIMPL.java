@@ -21,6 +21,7 @@ public class UsuarioServiceIMPL implements UsuarioService {
 
     @Override
     public Usuario CrearUsuario(Usuario usuario) {
+        usuario.setNombre(usuario.getNombre());
         return this.repo.save(usuario);
     }
 
@@ -31,11 +32,11 @@ public class UsuarioServiceIMPL implements UsuarioService {
 
     @Override
     public Usuario BuscaUsuario(int idUsuario) {
-        return this.repo.findById((Integer) idUsuario).orElse(null);
+        return this.repo.findById(idUsuario).get();
     }
 
     @Override
     public void EliminaUsuario(int idUsuario) {
-        this.repo.deleteById((Integer) idUsuario);
+        this.repo.deleteById(idUsuario);
     }
 }
