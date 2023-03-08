@@ -37,24 +37,24 @@
 </head>
 <body>
 <h1>Modificar Vuelo</h1>
-<form action="/CrudRepo/ModificarVuelo" method="post" >
+<form th:action="@{/CrudRepo/CrearVuelos}" method="post" >
 
   <label for="numVuelo">Numero de vuelo:</label>
-  <input type="text" id="numVuelo" name="numVuelo" th:text="${vuelo.numVuelo}" required>
+  <input type="text" id="numVuelo" name="numVuelo" th:value="${vuelo.numVuelo}" required>
   <label for="numPasajeros">Numero de Pasajeros:</label>
-  <input type="number" id="numPasajeros" name="numPasajeros" min="1" th:text="${vuelo.numPasajeros}" max="500" required>
+  <input type="number" id="numPasajeros" name="numPasajeros" min="1" th:value="${vuelo.numPasajeros}" max="500" required>
 
   <label for="origen">Origen:</label>
-  <input type="text" id="origen" name="origen" th:text="${vuelo.origen}"  required>
+  <input type="text" id="origen" name="origen" value="2" th:value="${vuelo.origen}"  required>
 
   <label for="destino">Destino:</label>
-  <input type="text" id="destino" name="destino" th:text="${vuelo.destino}" required>
+  <input type="text" id="destino" name="destino" th:value="${vuelo.destino}" required>
 
   <label for="fecha">Fecha de salida:</label>
-  <input type="date" id="fecha" name="fecha" th:text="${vuelo.fecha}" required>
+  <input type="date" id="fecha" name="fecha" th:value="${vuelo.fecha}" required>
 
   <label for="hora">Hora de salida:</label>
-  <input type="time" id="hora" name="horaSalida" th:text="${vuelo.hora}" required>
+  <input type="time" id="hora" name="horaSalida" th:value="${vuelo.hora}" required>
 
   <input type="hidden" id="idVuelo" name="idVuelo" value="">
   <input type="submit" value="Modificar vuelo">
