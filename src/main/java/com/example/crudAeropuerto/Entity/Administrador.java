@@ -8,13 +8,10 @@ import jakarta.persistence.*;
 public class Administrador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String nombre;
-
-    private String email;
-
-    private String contraseña;
+    int id;
+    String nombre;
+    String email;
+    String contraseña;
 
     public Administrador(String nombre, String email, String contraseña) {
         this.nombre = nombre;

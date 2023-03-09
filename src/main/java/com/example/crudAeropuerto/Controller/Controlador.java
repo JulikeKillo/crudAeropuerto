@@ -7,7 +7,9 @@ import com.example.crudAeropuerto.Repository.AdminRepo;
 import com.example.crudAeropuerto.Repository.UsuarioRepo;
 import com.example.crudAeropuerto.Repository.VueloRepo;
 import com.example.crudAeropuerto.Service.AdminService;
+import com.example.crudAeropuerto.Service.AdminServiceIMPL.AdminServiceIMPL;
 import com.example.crudAeropuerto.Service.UsuarioService;
+import com.example.crudAeropuerto.Service.UsuarioServiceIMPL.UsuarioServiceIMPL;
 import com.example.crudAeropuerto.Service.VueloServiceIMPL.VueloServiceIMPL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +31,13 @@ public class Controlador {
     private VueloRepo vueloRepo;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioServiceIMPL implUsu;
 
     @Autowired
     private UsuarioRepo usuarioRepo;
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceIMPL implAdmin;
 
     @Autowired
     private AdminRepo adminRepo;
@@ -58,12 +60,27 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(VueloCreado);
     }
 
-
     @GetMapping(value = "/ModificarVuelos")
     public String ModiVuelos(@RequestParam int numVuelo, Model model){
         Vuelo vuelo = impl.BuscaVuelo(numVuelo);
         model.addAttribute("vuelo", vuelo);
         return "modificarVuelo";
+    }
+    @PostMapping(value = "/ModificarVuelos")
+    public ResponseEntity<?> ModificarVuelos (@PathVariable int numVuelo,
+                                              @RequestParam int numPasajeros,
+                                              @RequestParam String origen,
+                                              @RequestParam String destino,
+                                              @RequestParam String fecha,
+                                              @RequestParam String horaSalida){
+        Vuelo vuelo = impl.BuscaVuelo(numVuelo);
+        vuelo.setNumPasajeros(numPasajeros);
+        vuelo.setOrigen(origen);
+        vuelo.setDestino(destino);
+        vuelo.setFecha(fecha);
+        vuelo.setHora(horaSalida);
+        Vuelo vueloModificado = vueloRepo.save(vuelo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(vueloModificado);
     }
 
 
@@ -80,7 +97,16 @@ public class Controlador {
         return "vuelos";
     }
 
+
     // Controlador para Usuarios
+
+    @GetMapping(value = "/ConsultarUsuarios")
+    public String ConsultarUsuarios(Model model){
+        List<Usuario> listaUsuarios = usuarioRepo.findAll();
+        model.addAttribute("listaUsuarios", listaUsuarios);
+        return "Usuarios";
+    }
+
     @RequestMapping(value = "/CrearUsuarios")
     public String CreaUsuarios(Model model){
         return "creaUsuarios";
@@ -92,24 +118,23 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCreado);
     }
 
-    @GetMapping(value = "/ConsultarUsuarios")
-    public String ConsultarUsuarios(Model model){
-        List<Usuario> listaUsuarios = usuarioRepo.findAll();
-        model.addAttribute("listaUsuarios", listaUsuarios);
-        return "usuarios";
-    }
-
     @GetMapping(value = "/ModificarUsuario")
     public String ModiUsuario(@RequestParam int idUsuario, Model model){
-        Usuario usuario = usuarioRepo.findById(idUsuario).orElse(null);
+        Usuario usuario = implUsu.BuscaUsuario(idUsuario);
         model.addAttribute("usuario", usuario);
         return "modificarUsuario";
     }
-
     @PostMapping(value = "/ModificarUsuario")
-    public ResponseEntity<?> ModificarUsuario(Usuario usuario){
+    public ResponseEntity<?> ModiUsuario (@PathVariable int idUsuario,
+                                              @RequestParam String nombre,
+                                              @RequestParam  String email,
+                                              @RequestParam String contraseña){
+        Usuario usuario = implUsu.BuscaUsuario(idUsuario);
+        usuario.setNombre(nombre);
+        usuario.setEmail(email);
+        usuario.setContraseña(contraseña);
         Usuario usuarioModificado = usuarioRepo.save(usuario);
-        return ResponseEntity.ok(usuarioModificado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioModificado);
     }
 
     @GetMapping(value = "/EliminarUsuario")
@@ -122,13 +147,16 @@ public class Controlador {
     // Controlador para Administradores
 
 
-    @ModelAttribute("listaAdministradores") // Estoy probando el model atribute que se supone que me solucionaba este error (dun poco diferente a los otros "consultarVuelo o usuario..
-    public List<Administrador> getAdministradores() {
-        return adminRepo.findAll();
-    }
-    @GetMapping(value = "/ConsultarAdministradores")
+    @RequestMapping(value = "/ConsultarAdministradores")
     public String ConsultarAdministradores(Model model){
+        List<Administrador> listaAdministradores = adminRepo.findAll();
+        model.addAttribute("listaAdministradores",listaAdministradores);
         return "administradores";
+    }
+
+    @RequestMapping(value = "/CrearAdministrador")
+    public String CrearAdministrador(Model model){
+        return "creaAdministradores";
     }
 
     @PostMapping(value = "/CrearAdministrador")
@@ -137,20 +165,26 @@ public class Controlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(administradorCreado);
     }
 
-
-
     @GetMapping(value = "/ModificarAdministrador")
     public String ModiAdministrador(@RequestParam int idAdministrador, Model model){
-        Administrador administrador = adminRepo.findById(idAdministrador).orElse(null);
+        Administrador administrador = implAdmin.BuscaAdministrador(idAdministrador);
         model.addAttribute("administrador", administrador);
         return "modificarAdministrador";
     }
 
     @PostMapping(value = "/ModificarAdministrador")
-    public ResponseEntity<?> ModificarAdministrador(Administrador administrador){
+    public ResponseEntity<?> ModificarAdministrador(@PathVariable int id,
+                                          @RequestParam String nombre,
+                                          @RequestParam  String email,
+                                          @RequestParam String contraseña){
+        Administrador administrador = implAdmin.BuscaAdministrador(id);
+        administrador.setNombre(nombre);
+        administrador.setEmail(email);
+        administrador.setContraseña(contraseña);
         Administrador administradorModificado = adminRepo.save(administrador);
-        return ResponseEntity.ok(administradorModificado);
+        return ResponseEntity.status(HttpStatus.CREATED).body(administradorModificado);
     }
+
 
     @GetMapping(value = "/EliminarAdministrador")
     public String EliminarAdministrador(@RequestParam int idAdministrador){

@@ -22,6 +22,7 @@ public class AdminServiceIMPL implements AdminService {
 
     @Override
     public Administrador CrearAdministrador(Administrador admin) {
+        // ¿vuelo.setOrigen(vuelo.getOrigen());
         return this.repo.save(admin);
     }
 
@@ -32,12 +33,12 @@ public class AdminServiceIMPL implements AdminService {
 
     @Override
     public Administrador BuscaAdministrador(int idAdmin) {
-        return this.repo.findById((Integer) idAdmin).orElse(null);
+        return this.repo.findById(idAdmin).get();
     }
 
     @Override
     public void EliminaAdministrador(int idAdmin) {
-        this.repo.deleteById((Integer) idAdmin);
+        this.repo.deleteById(idAdmin);
     }
 
 
